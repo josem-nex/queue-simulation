@@ -1,0 +1,73 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc} 
+\usepackage[spanish]{babel} 
+\usepackage{graphicx}
+\usepackage{booktabs} 
+
+\title{Informe del Proyecto: Simulación de Central Telefónica}
+\author{Miguel \\ Adrián}
+\date{27 de Octubre de 2023} 
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+
+Este proyecto se centra en la simulación de eventos discretos de una central telefónica para optimizar sus operaciones durante las horas punta. El objetivo principal es determinar el número óptimo de operadores telefónicos necesarios para minimizar las pérdidas económicas debido a las llamadas no contestadas, teniendo en cuenta los costes salariales.
+
+\section{Descripción del Sistema}
+
+\textbf{Variables de interés:}
+
+\begin{itemize}
+    \item Número de llamadas perdidas
+    \item Número de llamadas atendidas
+    \item Tiempo medio de espera en cola
+    \item Coste total (salarios + pérdidas por llamadas no contestadas)
+\end{itemize}
+
+\section{Detalles de Implementación}
+
+La simulación se ha desarrollado en Python utilizando la biblioteca SimPy. A continuación, se detallan los pasos clave de la implementación:
+
+\begin{enumerate}
+    \item \textbf{Definición de parámetros:} Se establecen los valores de las variables del sistema, como el número de líneas telefónicas, la tasa de llegada de llamadas (distribución de Poisson), la duración media de las llamadas (distribución exponencial), el coste por hora de un operador, etc.
+    \item \textbf{Creación de recursos:} Se modelan las líneas telefónicas como un recurso compartido con una capacidad limitada, utilizando la clase \texttt{simpy.Resource}.
+    \item \textbf{Modelado de la llegada de llamadas:} Se crea un proceso que genera llamadas entrantes al sistema siguiendo la distribución de Poisson especificada.
+    \item \textbf{Modelado del comportamiento de los clientes:} Se define un proceso para cada cliente que intenta realizar una llamada. Este proceso solicita una línea telefónica y, si no está disponible, espera en la cola.
+    \item \textbf{Modelado de la atención de llamadas:} Se simula la duración de una llamada utilizando la distribución exponencial definida.
+    \item \textbf{Recopilación de estadísticas:} Se registran las variables de interés durante la simulación, como las llamadas perdidas, las llamadas atendidas y los tiempos de espera.
+    \item \textbf{Ejecución de la simulación:} Se ejecuta la simulación durante un periodo de tiempo determinado, simulando las horas punta de la central telefónica.
+    \item \textbf{Análisis de resultados:} Se analizan las estadísticas recogidas para evaluar el rendimiento del sistema y responder a las preguntas planteadas.
+\end{enumerate}
+
+\section{Resultados y Experimentos}
+
+[En esta sección se deben presentar los resultados de la simulación, incluyendo tablas y gráficos que muestren la relación entre el número de operadores y las variables de interés. También se debe discutir la interpretación de los resultados, las hipótesis extraídas y la necesidad de análisis estadísticos adicionales.]
+
+\textbf{Ejemplo de resultados:}
+
+\begin{table}
+    \centering
+    \caption{Ejemplo de resultados de la simulación}
+    \begin{tabular}{ccc}
+        \toprule
+        Número de operadores & Llamadas perdidas & Coste total (€) \\
+        \midrule
+        2 & 100 & 500 \\
+        3 & 50 & 400 \\
+        4 & 20 & 480 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Modelo Matemático (Opcional)}
+
+[En esta sección se puede describir el modelo matemático utilizado para representar el sistema de colas, incluyendo los supuestos, las restricciones y la comparación de los resultados obtenidos mediante la simulación con los resultados teóricos.]
+
+\section{Conclusiones}
+
+[En esta sección se resumen las principales conclusiones del proyecto, incluyendo las recomendaciones para la optimización del centro de llamadas en base a los resultados de la simulación.] 
+
+\end{document}
