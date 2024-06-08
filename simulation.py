@@ -3,28 +3,6 @@ import random
 from simpy import Environment, Resource
 
 
-def generar_poisson(media):
-    """
-    Función para generar un número aleatorio a partir de una distribución de Poisson
-    Formula: P(k) = (e^-λ * λ^k) / k!
-    """
-    k = 0
-    p = math.exp(-media)
-    acumulado = p
-    r = random.random()
-    while acumulado < r:
-      k += 1
-      p = p * media / k
-      acumulado += p
-    return k
-
-def generar_dist_acumulado(dist, media, n):
-    """
-    Función para generar n números aleatorios a partir de una distribución de Poisson
-    """
-    return [dist(media) for _ in range(n)]
-
-
 def generar_exponencial(media):
   """
   Función para generar un número aleatorio a partir de una distribución exponencial

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from anal import Analizer
+from analysis import Analizer
 
 
 def s_data(analizers: list[Analizer]):

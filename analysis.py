@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 class Analizer:
     def __init__(self, results: list[tuple[int, int]], employees) -> None:
