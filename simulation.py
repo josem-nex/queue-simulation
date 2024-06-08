@@ -41,6 +41,11 @@ class CallCenter(Resource):
     def __init__(self, env: Environment, capacity: int):
         Resource.__init__(self, env, capacity=capacity)
         self.env = env
+        self._results = []
+
+    @property
+    def results(self):
+        return self._results
 
     # Generamos las llegadas de los clientes al sistema (llamadas)
     def client_arrivals(self):
@@ -62,8 +67,12 @@ class Client:
     def __init__(self, name: str,  env: Environment) -> None:
         self.env = env
         self.name = name
-
+        
     def call(self, call_center: CallCenter):
+        # Guardamos los datos de la llamada, tiempo de llamada y duracion
+        # En caso de que la llamada falle la duracion es -1
+        call_data = [self.env.now, -1] 
+
         print(f"{self.name} solicita una llamada en {self.env.now}")
         # Verificar si hay alguna operadora libre
         if call_center.count < call_center.capacity:   
@@ -74,12 +83,17 @@ class Client:
                 duration = generar_exponencial(6)
                 yield self.env.timeout(duration)
                 print(f"{self.name} finaliza la llamada en {self.env.now}")
+
+                call_center.results.append(tuple([call_data[0], duration]))
         # La llamada se pierde si no hay operadora libre
         else:
            print(f"Se pierde la llamada de {self.name}")
+           call_center.results.append(tuple(call_data))
 
-def simulate_call_center(time: int, operators: int):
+def simulate_call_center(time: int, operators: int) -> list[tuple[int, int]]:
    env = Environment()
    call_center = CallCenter(env, operators)
    env.process(call_center.client_arrivals())
    env.run(time) 
+
+   return call_center.results
