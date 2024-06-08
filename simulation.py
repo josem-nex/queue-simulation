@@ -73,21 +73,21 @@ class Client:
         # En caso de que la llamada falle la duracion es -1
         call_data = [self.env.now, -1] 
 
-        print(f"{self.name} solicita una llamada en {self.env.now}")
+        # print(f"{self.name} solicita una llamada en {self.env.now}")
         # Verificar si hay alguna operadora libre
         if call_center.count < call_center.capacity:   
             with call_center.request() as request:
                 yield request
-                print(f"{self.name} se comunica con el operador {call_center.count} en {self.env.now}")
+                # print(f"{self.name} se comunica con el operador {call_center.count} en {self.env.now}")
                 # Las llamadas tienen una duracion con distribucion exponencial de media 6 minutos
                 duration = generar_exponencial(6)
                 yield self.env.timeout(duration)
-                print(f"{self.name} finaliza la llamada en {self.env.now}")
+                # print(f"{self.name} finaliza la llamada en {self.env.now}")
 
                 call_center.results.append(tuple([call_data[0], duration]))
         # La llamada se pierde si no hay operadora libre
         else:
-           print(f"Se pierde la llamada de {self.name}")
+        #    print(f"Se pierde la llamada de {self.name}")
            call_center.results.append(tuple(call_data))
 
 def simulate_call_center(time: int, operators: int) -> list[tuple[int, int]]:
