@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 class Analizer:
     def __init__(self, results: list[tuple[int, int]], employees) -> None:
@@ -25,6 +25,7 @@ class Analizer:
         Min call duration: {self.min_call_duration}
         Total time: {self.total_time}
         Lost money: {self.lost_money}
+        Employees: {self.employees}
         Employees cost: {self.employees_cost}
         '''
 
