@@ -187,6 +187,21 @@ Dicho valor puede ser modificado y analizado para otros casos. (Debe ser un valo
     \item Se dice que el 60\% de las llamadas no respondidas las utiliza otra compañía, por lo que de las llamadas perdidas solo se cuenta el 60\% como dinero perdido. (Se asume que el 40\% restante se atiende en otro momento).
 \end{itemize}
 
+\section{Pruebas de hipótesis}
+Luego de obtener los resultados decidimos realizar varias pruebas de hipótesis basadas en estos.
+
+\subsection{La cantidad óptima de líneas en el horario pico debe ser mayor o igual que 5}
+\begin{itemize}
+    \item H_0: c >= 5
+    \item H_1: c < 5
+
+    Tomando $\alpha = 0.05 y viendo que la formula P_c es decreciente a medida que los valores de c aumentan, como para 
+    c = 5 el p-value es 0.0367, entonces podemos deducir que la hipótesis nula es cierta. Por tanto la cantidad óptima de 
+    líneas en el horario pico c, debe ser mayor o igual que 5.
+\end{itemize}
+
+\subsection{}
+
 
 \section{Modelo Matemático}
 
