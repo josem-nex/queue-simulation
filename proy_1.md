@@ -1,4 +1,3 @@
-
 # Proyecto: Simulación de Eventos Discretos
 
 Este proyecto tiene como objetivo desarrollar una simulación de eventos discretos para analizar y entender mejor ciertos fenómenos. A través de este trabajo, buscamos aplicar los principios de la simulación de eventos discretos para modelar y experimentar con estos fenómenos, y obtener resultados que nos ayuden a tomar decisiones informadas.
@@ -38,7 +37,7 @@ El informe del proyecto debe ser autocontenido y debe proporcionar una descripci
 
 - Simulación de eventos deportivos
 - Ejemplos del libro "Aplicando Teoría de Colas en
-Dirección de Operaciones" capitiulos 6 y 7 que no estén resueltos en el libro.
+  Dirección de Operaciones" capitiulos 6 y 7 que no estén resueltos en el libro.
 - Ejemplos del libro "Simulation, Fifth Edition by Sheldon M. Ross" del 7.3 al 7.8.
 - temas de interés del estudiante previa aprobación de algún profesor.
 
