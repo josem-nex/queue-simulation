@@ -15,9 +15,11 @@ def generar_exponencial(media):
     Clase que representa el centro de llamadas, que posee una capacidad de atencion simultanea
     Representada como child de la clase Resource de simpy
 '''
+
 class CallCenter(Resource):
-    def __init__(self, env: Environment, capacity: int):
-        Resource.__init__(self, env, capacity=capacity)
+    def __init__(self, env: Environment, parameters: dict):
+        self.parameters = parameters
+        Resource.__init__(self, env, capacity=parameters.get('operators', 3))
         self.env = env
         self._results = []
 
@@ -31,7 +33,7 @@ class CallCenter(Resource):
 
         while True:
             # La llegada de los clientes sigue una distribucion exponencial de media 3 minutos
-            client_arrival = generar_exponencial(3)
+            client_arrival = generar_exponencial(self.parameters.get('arrival_mean', 3))
             yield self.env.timeout(client_arrival)
             
             client = Client(f"Cliente {i}", self.env)
@@ -51,27 +53,23 @@ class Client:
         # En caso de que la llamada falle la duracion es -1
         call_data = [self.env.now, -1] 
 
-        # print(f"{self.name} solicita una llamada en {self.env.now}")
         # Verificar si hay alguna operadora libre
         if call_center.count < call_center.capacity:   
             with call_center.request() as request:
                 yield request
-                # print(f"{self.name} se comunica con el operador {call_center.count} en {self.env.now}")
                 # Las llamadas tienen una duracion con distribucion exponencial de media 6 minutos
-                duration = generar_exponencial(6)
+                duration = generar_exponencial(call_center.parameters.get('duration_mean', 6))
                 yield self.env.timeout(duration)
-                # print(f"{self.name} finaliza la llamada en {self.env.now}")
 
                 call_center.results.append(tuple([call_data[0], duration]))
         # La llamada se pierde si no hay operadora libre
         else:
-        #    print(f"Se pierde la llamada de {self.name}")
            call_center.results.append(tuple(call_data))
 
-def simulate_call_center(time: int, operators: int) -> list[tuple[int, int]]:
+def simulate_call_center(parameters: dict) -> list[tuple[int, int]]:
    env = Environment()
-   call_center = CallCenter(env, operators)
+   call_center = CallCenter(env, parameters)
    env.process(call_center.client_arrivals())
-   env.run(time) 
+   env.run(parameters.get('time', 180)) 
 
    return call_center.results
