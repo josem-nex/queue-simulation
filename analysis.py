@@ -20,6 +20,7 @@ class Analizer:
         self.lost_money = self.lost_calls * parameters['profitxcall'] * parameters['porcentage_lost_calls']
         self.employees = parameters['operators']
         self.employees_cost =  parameters['operators'] * parameters['operator_costxhour'] *8
+        self.profit = self.successful_calls * parameters['profitxcall'] - self.employees_cost - self.lost_money
     
     def __str__(self) -> str:
         return f'''
@@ -33,5 +34,6 @@ class Analizer:
         Lost money: {self.lost_money}
         Employees: {self.employees}
         Employees cost: {self.employees_cost}
+        Profit: {self.profit}
         '''
 
