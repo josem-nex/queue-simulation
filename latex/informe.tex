@@ -2,72 +2,258 @@
 \usepackage[utf8]{inputenc} 
 \usepackage[spanish]{babel} 
 \usepackage{graphicx}
-\usepackage{booktabs} 
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{float}
+\geometry{
+  left=20mm,
+  right=20mm,
+}
 
-\title{Informe del Proyecto: Simulación de Central Telefónica}
-\author{Miguel \\ Adrián}
-\date{27 de Octubre de 2023} 
-
+\title{Simulación de Eventos Discretos, Teoría de Colas}
+\author{José Miguel Zayas Pérez (tlgrm: @nex25k) C312 \\ Adrián Hernández Santos (tlgrm: @ahdez929) C311}
 \begin{document}
-
-\maketitle
-
+\maketitle{}
+\begin{center}
+    \href{https://github.com/josem-nex/queue-simulation}{Enlace en GitHub}
+\end{center}
 \section{Introducción}
 
-Este proyecto se centra en la simulación de eventos discretos de una central telefónica para optimizar sus operaciones durante las horas punta. El objetivo principal es determinar el número óptimo de operadores telefónicos necesarios para minimizar las pérdidas económicas debido a las llamadas no contestadas, teniendo en cuenta los costes salariales.
 
-\section{Descripción del Sistema}
+El problema que hemos decidido abordar es el 6.10(Central Telefónica) del libro "Aplicando Teoría de Colas en
+Dirección de Operaciones".
 
-\textbf{Variables de interés:}
+La compañía aérea “Siberia” tiene una centralita de teléfonos con 3 líneas. La
+empresa tiene un pico de llamadas durante 3 horas, en las que algunos clientes no
+pueden ponerse en contacto con la empresa debido al intenso tráfico de llamadas
+(se sabe que si las tres líneas están siendo utilizadas al cliente no se le puede
+retener). La compañía estima que, debido a la fuerte competencia, el 60% de las
+llamadas no respondidas utiliza otra compañía. Durante las horas punta las
+llamadas siguen una distribución de Poisson con una media de 20 llamadas hora y
+cada telefonista emplea 6 minutos por cada llamada (distribución exponencial). El
+beneficio medio de un viaje es de 210 euros, ¿cuánto dinero se pierde diariamente
+debido a llamadas no contestadas? Se supone que durante las horas que no son
+críticas se cogen todas las llamadas. Si cada empleado cuesta a la compañía 24
+euros/hora y un empleado debe trabajar 8 horas al día, ¿cuál es el número óptimo
+de empleados? Las horas punta siempre son a la misma hora. La centralita no se
+cierra nunca y la puede atender un solo empleado cuando no hay hora punta. Se
+asume que el coste de añadir una línea es despreciable.
 
+
+
+\section{Objetivos y Metas}
+El objetivo de este proyecto es simular el sistema de la centralita de la compañía aérea "Siberia" para poder responder a las siguientes preguntas:
 \begin{itemize}
-    \item Número de llamadas perdidas
-    \item Número de llamadas atendidas
-    \item Tiempo medio de espera en cola
-    \item Coste total (salarios + pérdidas por llamadas no contestadas)
+    \item ¿Cuántas llamadas se pierden diariamente debido a llamadas no contestadas?
+    \item ¿Cuál es el número óptimo de empleados?
 \end{itemize}
 
+Además también se desea:
+\begin{itemize}
+    \item Comparar los resultados obtenidos con los resultados experimentales.
+    \item Realizar un análisis estadístico de la simulación.
+    \item Analizar como varían los resultados al modificar los valores de las variables del sistema.
+\end{itemize}
+
+\section{Sistema y Variables de Interés}
+\begin{itemize}
+    \item Patrón de llegada de llamadas: Poisson con una media de 20 llamadas por hora. (Como se trata de un proceso de Poisson, el tiempo entre llegadas de llamadas sigue una distribución exponencial con media igual al inverso de la original, la cual es 1/3 (lo que representa 1 llamada cada 3 minutos de media). Por lo tanto, el tiempo entre llegadas de llamadas es una variable aleatoria exponencial con media 3 minutos.)
+    \item Tiempo de atención de llamadas: Exponencial con media de 6 minutos.
+    \item Número de líneas inicial: 3. En la descripción del problema se asume que el coste de añadir una línea es despreciable, por lo que no se tiene en cuenta para la simulación. (Si todas las líneas están ocupadas, el cliente no puede ser retenido.)
+    \item Horas punta: 3 horas al día. Durante estas horas, el 0.6 de las llamadas no contestadas utiliza otra compañía.
+    \item Beneficio medio de un viaje: 210 euros.
+    \item Coste de cada empleado: 24 euros por hora.
+    \item Horas de trabajo de cada empleado: 8 horas al día.
+\end{itemize}
+
+Nuestro problema se puede modelar como un sistema de colas M/M/c/c/FIFO, donde:
+
+\begin{itemize}
+    \item M: Llegada de llamadas con distribución de Poisson.
+    \item M: Tiempo de atención con distribución exponencial.
+    \item c: Número de servidores (Lineas o empleados en horario pico).
+    \item c: Capacidad del sistema. Existen restricciones respecto al número de clientes que pueden esperar en la cola, la cual es 0, no hay cola pues como se refiere a llamadas telefónicas, si las tres líneas están ocupadas, el cliente no puede ser retenido, por lo que la capacidad total del sistema es igual a la cantidad de servidores.
+    \item FIFO: First In First Out. Las llamadas se atienden en el orden en que llegan, siempre y cuando haya un servidor disponible.
+\end{itemize}
+
+Todas las variables son modificables en el código de la simulación para poder analizar cómo varían los resultados al modificar los valores de las variables del sistema. Estos valores iniciales son los propuestos en el problema.
 \section{Detalles de Implementación}
 
-La simulación se ha desarrollado en Python utilizando la biblioteca SimPy. A continuación, se detallan los pasos clave de la implementación:
+Para la implementación de la simulación, se ha utilizado el lenguaje de programación Python y la librería SimPy. SimPy es una biblioteca de simulación de eventos discretos basada en procesos que se ejecutan en un entorno de simulación. Permite modelar y simular sistemas complejos y es muy útil para la simulación de sistemas de colas.
 
-\begin{enumerate}
-    \item \textbf{Definición de parámetros:} Se establecen los valores de las variables del sistema, como el número de líneas telefónicas, la tasa de llegada de llamadas (distribución de Poisson), la duración media de las llamadas (distribución exponencial), el coste por hora de un operador, etc.
-    \item \textbf{Creación de recursos:} Se modelan las líneas telefónicas como un recurso compartido con una capacidad limitada, utilizando la clase \texttt{simpy.Resource}.
-    \item \textbf{Modelado de la llegada de llamadas:} Se crea un proceso que genera llamadas entrantes al sistema siguiendo la distribución de Poisson especificada.
-    \item \textbf{Modelado del comportamiento de los clientes:} Se define un proceso para cada cliente que intenta realizar una llamada. Este proceso solicita una línea telefónica y, si no está disponible, espera en la cola.
-    \item \textbf{Modelado de la atención de llamadas:} Se simula la duración de una llamada utilizando la distribución exponencial definida.
-    \item \textbf{Recopilación de estadísticas:} Se registran las variables de interés durante la simulación, como las llamadas perdidas, las llamadas atendidas y los tiempos de espera.
-    \item \textbf{Ejecución de la simulación:} Se ejecuta la simulación durante un periodo de tiempo determinado, simulando las horas punta de la central telefónica.
-    \item \textbf{Análisis de resultados:} Se analizan las estadísticas recogidas para evaluar el rendimiento del sistema y responder a las preguntas planteadas.
-\end{enumerate}
+El código de la simulación se divide en las siguientes partes:
+\begin{itemize}
+    \item `simulation.py`: Contiene la implementación de la simulación y devuelve un array de duplas que corresponde a la cantidad de llamadas atendidas, siendo el primer valor el momento en que llegó la llamada y el segundo valor el tiempo de duración de la llamada.
+    \item `analysis.py`: Contiene la clase Analizer que se encarga de separar los resultados obtenidos de la simulación.
+    \item `utils.py`: Contiene funciones útiles para el manejo de los datos obtenidos de la simulación así como para la generación de gráficos.
+    \item `queue-simulation.ipynb`: Jupyter Notebook que contiene la simulación principal y el análisis de los resultados.
+    \item `requirements.txt`: Archivo que contiene las dependencias necesarias para ejecutar el código.
+\end{itemize}
+
+Se llevan a cabo una cantidad determinada de simulaciones para diferente cantidad de empleados, luego se recogen los resultados y se analizan para determinar el número óptimo de empleados.
 
 \section{Resultados y Experimentos}
+Dado que el objetivo principal de la simulación es determinar el número óptimo de empleados, se realizan varias simulaciones variando el número de empleados y se analizan los resultados obtenidos. Se busca determinar cuánto dinero se pierde diariamente debido a llamadas no contestadas y cuál es el número óptimo de empleados para minimizar estas pérdidas.
 
-[En esta sección se deben presentar los resultados de la simulación, incluyendo tablas y gráficos que muestren la relación entre el número de operadores y las variables de interés. También se debe discutir la interpretación de los resultados, las hipótesis extraídas y la necesidad de análisis estadísticos adicionales.]
+Importante tener en cuenta que el valor de aun empleado es de 24 euros por hora y debe trabajar 8 horas al día, siendo un total de 192 euros por día.
 
-\textbf{Ejemplo de resultados:}
+Los siguientes análisis se realizaron con 2000 simulaciones por cada cantidad de empleados, al volver a ejecutar el notebook se obtendrán valores muy ligeramente diferentes.
 
-\begin{table}
+Se recomienda visualizar las gráficas correspondientes en el notebook de los resultados que se muestran a continuación.
+\subsection*{Resultados para diferentes números de empleados (c)}
+
+
+\begin{table}[H]
     \centering
-    \caption{Ejemplo de resultados de la simulación}
-    \begin{tabular}{ccc}
+    \caption{Resultados de la simulación}
+    \begin{tabular}{cccc}
         \toprule
-        Número de operadores & Llamadas perdidas & Coste total (€) \\
+        Empleados & Llamadas Perdidas (Promedio) & Dinero Perdido (Promedio) & Costo Total (€) \\
         \midrule
-        2 & 100 & 500 \\
-        3 & 50 & 400 \\
-        4 & 20 & 480 \\
+        3 & 11.9945 & 1511.307 & 576 \\
+        4 & 5.4165 & 682.479 & 768 \\
+        5 & 2.124 & 267.624 & 960 \\
+        6 & 0.711 & 89.586 & 1152 \\
+        7 & 0.186 & 23.436 & 1344 \\
         \bottomrule
     \end{tabular}
 \end{table}
+\subsubsection*{3 empleados}
 
-\section{Modelo Matemático (Opcional)}
+Consideramos que el primer valor significativo a analizar es para un total de 3 empleados durante el horario pico (3h) pues con un número menor de empleados se perderían una cantidad considerable de llamdas, como se muestra en la simulación.
+\begin{itemize}
+    \item Media de llamadas perdidas: 11.9945
+    \item Media de dinero perdido para tres empleados: 1511.307
+\end{itemize}
 
-[En esta sección se puede describir el modelo matemático utilizado para representar el sistema de colas, incluyendo los supuestos, las restricciones y la comparación de los resultados obtenidos mediante la simulación con los resultados teóricos.]
+Considerando que añadir un nuevo empleado cuesta 192 euros al día, se puede observar que dicho coste es mucho menor que el dinero perdido por llamadas no contestadas. Por lo tanto, parece indicar que el número óptimo de empleados es mayor a 3.
+\subsubsection*{4 empleados}
 
+\begin{itemize}
+    \item Media de llamadas perdidas: 5.4165
+    \item Media de dinero perdido para cuatro empleados: 682.479
+\end{itemize}
+
+Se observa que al añadir un cuarto empleado, la cantidad de llamadas perdidas disminuye considerablemente, lo que resulta en una reducción significativa del dinero perdido. Por lo tanto, parece indicar que el número óptimo de empleados es mayor o igual a 4.
+
+\subsubsection*{5 empleados} 
+
+\begin{itemize}
+    \item Media de llamadas perdidas: 2.124
+    \item Media de dinero perdido: 267.624
+\end{itemize}
+
+En este caso, al añadir un quinto empleado, la cantidad de llamadas perdidas es cercana a dos, lo que resulta en una reducción adicional del dinero perdido. Como la diferencia entre el dinero perdido con 4 empleados y 5 empleados es mayor que el coste de añadir un empleado adicional, parece indicar que el número óptimo de empleados es mayor o igual a 5.
+
+\subsubsection*{6 empleados}
+
+\begin{itemize}
+    \item Media de llamadas perdidas: 0.711
+    \item Media de dinero perdido: 89.586
+\end{itemize}
+
+Con seis empleados se obtiene una cantidad de llamadas perdidas muy baja, promedio inferior a una llamada. Es importante destacar que la diferencia de dinero perdido entre 5 y 6 empleados es de 178 lo que es menor que añadir el empleado adicional, por lo que a primera instancia pareciera que se gana más dinero sin añadir a dicho empleado número 6 ya que costaría más que el dinero que se ganaría.
+
+\subsubsection*{7 empleados}
+
+\begin{itemize}
+    \item Media de llamadas perdidas: 0.186
+    \item Media de dinero perdido: 23.436
+\end{itemize}
+
+La diferencia respecto a 6 empleados no es significativa y el dinero que se gana es considerablemente menor que el coste de añadir un empleado adicional, por lo que se concluye que el número óptimo de empleados es menor que 7.
+
+\subsection*{Análisis final}
+
+Es evidente que la cantidad óptima de empleados obtenida a partir de la simulación ronda entre los 5 o 6, pues con 5 empleados se maximizan las ganancias ya que la diferencia entre el dinero perdido con 5 empleados y 6 empleados es mayor que el coste de añadir un empleado adicional.
+Sin embargo dicha diferencia es de 178 euros y un empleado cuesta 192 euros al día. Dada la naturaleza del problema y la pequeña diferencia entre 5 y 6 empleados consideramos que la cantidad óptima de empleados es 6 pues a pesar de que se pierde una pequeña cantidad de dinero respecto a 5 empleados, se gana en el largo plazo dado que se pierden menos llamadas como promedio garantizando la fidelidad y satisfacción del cliente.
+\begin{itemize}
+    \item Número óptimo de empleados(durante horario pico): 6
+\end{itemize}
+
+\section{Parada de la simulación}
+Dada la naturaleza del problema la parada de la simulación se realiza por una cantidad de tiempo fija, en este caso son 3 horas o debido a que el tiempo de la simulación es en minutos, 180 minutos.
+
+Dicho valor puede ser modificado y analizado para otros casos. (Debe ser un valor menor o igual a 8h, pues se asume que un empleado trabaja 8 horas al día).
+
+\section{Supuestos y Restricciones}
+\begin{itemize}
+    \item En la descripción del problema se asume que el coste de añadir una línea es despreciable, por lo que no se tiene en cuenta para la simulación.
+    \item Además se dice que fuera de las horas punta se cogen todas las llamadas y un solo empleado puede atender la central, por lo que no se tienen en cuenta las llamadas no contestadas fuera de las horas punta. 
+    \item Solo se considera el análisis durante el horario pico.
+    \item Se tiene en cuenta que un empleado tiene que trabajar 8 horas al día, por lo que al añadir nuevos empleados en la hora pico su costo es por las 8 horas que debería trabajar.
+    \item Se asume que el horario pico(<=8h) está dentro de una jornada laboral de 8 horas y no ocupa dos de ellas.
+    \item Se dice que el 60\% de las llamadas no respondidas las utiliza otra compañía, por lo que de las llamadas perdidas solo se cuenta el 60\% como dinero perdido. (Se asume que el 40\% restante se atiende en otro momento).
+\end{itemize}
+
+
+\section{Modelo Matemático}
+
+El sistema se puede modelar como un sistema de colas M/M/c/c/FIFO, donde:
+
+- M: Llegada de llamadas con distribución de Poisson.
+- M: Tiempo de atención con distribución exponencial.
+- c: Número de servidores (líneas o empleados).
+- c: Capacidad del sistema (0, sin cola).
+- FIFO: Primero en entrar, primero en salir.
+
+
+\subsection{Parámetros del Modelo}
+
+- $\lambda$: Tasa de llegada de llamadas (20 llamadas/hora).
+- $\mu$: Tasa de servicio (10 llamadas/hora).
+- c: Número de servidores (variado en la simulación).
+
+\subsection{Fórmulas de Erlang}
+
+Dado que nuestro problema es un clásico problema de teoría de colas de la forma \textbf{M/M/c/c} (Como mencionamos anteriormente), podemos aplicar el modelo de Erlang, el cual queda definido por las siguientes fórmulas:
+
+\begin{itemize}
+    % \item Probabilidad de sistema lleno: $P_c = \frac{r^c}{c!} / \sum_{i=0}^{c} \frac{r^i}{i!}$
+    \item Probabilidad de sistema lleno: 
+    \[
+    P_c = \frac{\frac{r^c}{c!}}{\sum_{i=0}^{c} \frac{r^i}{i!}}
+    \]
+    \item Número medio de clientes en el sistema: 
+    \[
+    L = r*(1- P_c)
+    \]
+    \item Tiempo medio de estancia en el sistema: 
+    \[
+    W = \frac{L}{\lambda (1 - P_c)}
+    \]
+\end{itemize}
+
+\subsubsection*{Resultados Teóricos}
+
+Nuestro sistema posee los siguientes parámetros iniciales:
+\begin{itemize}
+    \item $\lambda = 1/3$
+    \item $\mu = 1/6$
+\end{itemize}
+
+\subsubsection*{Análisis para diferentes valores de cantidad de empleados (c)}
+
+\begin{table}[H]
+    \centering
+    \caption{Resultados de la simulación}
+    \begin{tabular}{cccc}
+        \toprule
+        Empleados & $P_c$ & $L$ & $W$ \\
+        \midrule
+        3 & 0.21 & 1.5789 & 6 \\
+        4 & 0.095 & 1.809 & 6 \\
+        5 & 0.0367 & 1.9266 & 6 \\
+        6 & 0.0121 & 1.9758 & 6 \\
+        7 & 0.00344 & 1.9931 & 6 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 \section{Conclusiones}
+Los resultados teóricos son similares a los obtenidos en la simulación, para una cantidad de empleados mayor $P_c$ tiende a 0, lo que indica que el sistema no se llenará. 
+Importante tener en cuenta que dicho análisis teórico no tiene en cuenta el costo de añadir un empleado adicional.
 
-[En esta sección se resumen las principales conclusiones del proyecto, incluyendo las recomendaciones para la optimización del centro de llamadas en base a los resultados de la simulación.] 
-
+Se concluye que el número óptimo de empleados es 6 con vistas a maximizar las ganancias a largo plazo y teniendo un conocimiento más profundo del problema. 
+Sin embargo, como comentamos anteriormente 5 empleados maximiza las ganancias a corto plazo. 
 \end{document}
