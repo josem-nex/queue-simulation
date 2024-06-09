@@ -109,65 +109,24 @@ Se recomienda visualizar las gráficas correspondientes en el notebook de los re
     \caption{Resultados de la simulación}
     \begin{tabular}{cccc}
         \toprule
-        Empleados & Llamadas Perdidas (Promedio) & Dinero Perdido (Promedio) & Costo Total (€) \\
+        Empleados & Llamadas Perdidas (Promedio) & Dinero Perdido (Promedio) & Ganancia Total \\
         \midrule
-        3 & 11.9945 & 1511.307 & 576 \\
-        4 & 5.4165 & 682.479 & 768 \\
-        5 & 2.124 & 267.624 & 960 \\
-        6 & 0.711 & 89.586 & 1152 \\
-        7 & 0.186 & 23.436 & 1344 \\
+        3 & 12.0785 & 1521.891 & 7600.539 \\
+        4 & 5.4185 & 682.731 & 9631.494 \\
+        5 & 2.0635 & 260.001 & 10529.499 \\
+        6 & 0.647 & 81.522 & 10823.313 \\
+        7 & 0.164 & 20.664 & 10723.146 \\
+        8 & 0.0385 & 4.851 & 10648.914 \\
+        9 & 0.007 & 0.882 & 10465.083 \\
         \bottomrule
     \end{tabular}
 \end{table}
-\subsubsection*{3 empleados}
 
-Consideramos que el primer valor significativo a analizar es para un total de 3 empleados durante el horario pico (3h) pues con un número menor de empleados se perderían una cantidad considerable de llamdas, como se muestra en la simulación.
-\begin{itemize}
-    \item Media de llamadas perdidas: 11.9945
-    \item Media de dinero perdido para tres empleados: 1511.307
-\end{itemize}
+\subsection{Análisis de los Resultados}
 
-Considerando que añadir un nuevo empleado cuesta 192 euros al día, se puede observar que dicho coste es mucho menor que el dinero perdido por llamadas no contestadas. Por lo tanto, parece indicar que el número óptimo de empleados es mayor a 3.
-\subsubsection*{4 empleados}
+Como se observa en la tabla anterior, a medida que se aumenta la cantidad de empleados, la cantidad de llamadas perdidas disminuye, lo que resulta en una menor cantidad de dinero perdido y una mayor ganancia total.
+Además se aprecia que a partir de los 6 empleados el costo de añadir un nuevo empleado es mayor que el dinero que aportaría su llegada, por lo que las ganancias comienzan a disminuir lo que parece indicar que:
 
-\begin{itemize}
-    \item Media de llamadas perdidas: 5.4165
-    \item Media de dinero perdido para cuatro empleados: 682.479
-\end{itemize}
-
-Se observa que al añadir un cuarto empleado, la cantidad de llamadas perdidas disminuye considerablemente, lo que resulta en una reducción significativa del dinero perdido. Por lo tanto, parece indicar que el número óptimo de empleados es mayor o igual a 4.
-
-\subsubsection*{5 empleados} 
-
-\begin{itemize}
-    \item Media de llamadas perdidas: 2.124
-    \item Media de dinero perdido: 267.624
-\end{itemize}
-
-En este caso, al añadir un quinto empleado, la cantidad de llamadas perdidas es cercana a dos, lo que resulta en una reducción adicional del dinero perdido. Como la diferencia entre el dinero perdido con 4 empleados y 5 empleados es mayor que el coste de añadir un empleado adicional, parece indicar que el número óptimo de empleados es mayor o igual a 5.
-
-\subsubsection*{6 empleados}
-
-\begin{itemize}
-    \item Media de llamadas perdidas: 0.711
-    \item Media de dinero perdido: 89.586
-\end{itemize}
-
-Con seis empleados se obtiene una cantidad de llamadas perdidas muy baja, promedio inferior a una llamada. Es importante destacar que la diferencia de dinero perdido entre 5 y 6 empleados es de 178 lo que es menor que añadir el empleado adicional, por lo que a primera instancia pareciera que se gana más dinero sin añadir a dicho empleado número 6 ya que costaría más que el dinero que se ganaría.
-
-\subsubsection*{7 empleados}
-
-\begin{itemize}
-    \item Media de llamadas perdidas: 0.186
-    \item Media de dinero perdido: 23.436
-\end{itemize}
-
-La diferencia respecto a 6 empleados no es significativa y el dinero que se gana es considerablemente menor que el coste de añadir un empleado adicional, por lo que se concluye que el número óptimo de empleados es menor que 7.
-
-\subsection*{Análisis final}
-
-Es evidente que la cantidad óptima de empleados obtenida a partir de la simulación ronda entre los 5 o 6, pues con 5 empleados se maximizan las ganancias ya que la diferencia entre el dinero perdido con 5 empleados y 6 empleados es mayor que el coste de añadir un empleado adicional.
-Sin embargo dicha diferencia es de 178 euros y un empleado cuesta 192 euros al día. Dada la naturaleza del problema y la pequeña diferencia entre 5 y 6 empleados consideramos que la cantidad óptima de empleados es 6 pues a pesar de que se pierde una pequeña cantidad de dinero respecto a 5 empleados, se gana en el largo plazo dado que se pierden menos llamadas como promedio garantizando la fidelidad y satisfacción del cliente.
 \begin{itemize}
     \item Número óptimo de empleados(durante horario pico): 6
 \end{itemize}
@@ -192,13 +151,11 @@ Luego de obtener los resultados decidimos realizar varias pruebas de hipótesis 
 
 \subsection{La cantidad óptima de líneas en el horario pico debe ser mayor o igual que 5}
 \begin{itemize}
-    \item H_0: c >= 5
-    \item H_1: c < 5
-
-    Tomando $\alpha = 0.05 y viendo que la formula P_c es decreciente a medida que los valores de c aumentan, como para 
-    c = 5 el p-value es 0.0367, entonces podemos deducir que la hipótesis nula es cierta. Por tanto la cantidad óptima de 
-    líneas en el horario pico c, debe ser mayor o igual que 5.
+    \item $H_0: c >= 5$
+    \item $H_1: c < 5$
 \end{itemize}
+
+Tomando $\alpha = 0.05$ y viendo que la fórmula $P_c$ es decreciente a medida que los valores de c aumentan, como para $c = 5$ el p-value es 0.0367, entonces podemos deducir que la hipótesis nula es cierta. Por tanto la cantidad óptima de líneas en el horario pico c, debe ser mayor o igual que 5.
 
 \subsection{}
 
