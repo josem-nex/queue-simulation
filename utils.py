@@ -12,8 +12,21 @@ def s_data(analizers: list[Analizer]):
     max_call_duration = np.array([analizer.max_call_duration for analizer in analizers])
     min_call_duration = np.array([analizer.min_call_duration for analizer in analizers])
     total_time = np.array([analizer.total_time for analizer in analizers])
-    return calls, successful_calls, lost_calls, average_call_duration, max_call_duration, min_call_duration, lost_money, total_time
+    profit = np.array([analizer.profit for analizer in analizers])
+    return calls, successful_calls, lost_calls, average_call_duration, max_call_duration, min_call_duration, lost_money, total_time, profit
 
+def print_means(calls, successful_calls, lost_calls, average_call_duration, max_call_duration, min_call_duration, lost_money, total_time, profit):
+    print(f'''
+    Calls: {np.mean(calls)}
+    Successful calls: {np.mean(successful_calls)}
+    Lost calls: {np.mean(lost_calls)}
+    Average call duration: {np.mean(average_call_duration)}
+    Max call duration: {np.mean(max_call_duration)}
+    Min call duration: {np.mean(min_call_duration)}
+    Lost money: {np.mean(lost_money)}
+    Total time: {np.mean(total_time)}
+    Profit: {np.mean(profit)}
+    ''')
 
 def analysis(data, name: str, do_print):
     media = np.mean(data)
