@@ -67,15 +67,8 @@ Además también se desea:
     \item Horas de trabajo de cada empleado: 8 horas al día.
 \end{itemize}
 
-Nuestro problema se puede modelar como un sistema de colas M/M/c/c/FIFO, donde:
+Nuestro problema se puede modelar como un sistema de colas M/M/c/c/FIFO el cual veremos en detalle más adelante.
 
-\begin{itemize}
-    \item M: Llegada de llamadas con distribución de Poisson.
-    \item M: Tiempo de atención con distribución exponencial.
-    \item c: Número de servidores (Lineas o empleados en horario pico).
-    \item c: Capacidad del sistema. Existen restricciones respecto al número de clientes que pueden esperar en la cola, la cual es 0, no hay cola pues como se refiere a llamadas telefónicas, si las tres líneas están ocupadas, el cliente no puede ser retenido, por lo que la capacidad total del sistema es igual a la cantidad de servidores.
-    \item FIFO: First In First Out. Las llamadas se atienden en el orden en que llegan, siempre y cuando haya un servidor disponible.
-\end{itemize}
 
 Todas las variables son modificables en el código de la simulación para poder analizar cómo varían los resultados al modificar los valores de las variables del sistema. Estos valores iniciales son los propuestos en el problema.
 \section{Detalles de Implementación}
@@ -142,12 +135,12 @@ Dicho valor puede ser modificado y analizado para otros casos. (Debe ser un valo
     \item Además se dice que fuera de las horas punta se cogen todas las llamadas y un solo empleado puede atender la central, por lo que no se tienen en cuenta las llamadas no contestadas fuera de las horas punta. 
     \item Solo se considera el análisis durante el horario pico.
     \item Se tiene en cuenta que un empleado tiene que trabajar 8 horas al día, por lo que al añadir nuevos empleados en la hora pico su costo es por las 8 horas que debería trabajar.
-    \item Se asume que el horario pico(<=8h) está dentro de una jornada laboral de 8 horas y no ocupa dos de ellas.
+    \item Se asume que el horario pico($<=8h$) está dentro de una jornada laboral de 8 horas y no ocupa dos de ellas.
     \item Se dice que el 60\% de las llamadas no respondidas las utiliza otra compañía, por lo que de las llamadas perdidas solo se cuenta el 60\% como dinero perdido. (Se asume que el 40\% restante se atiende en otro momento).
 \end{itemize}
 
 \section{Pruebas de hipótesis}
-Luego de obtener los resultados decidimos realizar varias pruebas de hipótesis basadas en estos.
+Luego de obtener los resultados decidimos realizar pruebas de hipótesis basadas en estos.
 
 \subsection{La cantidad óptima de líneas en el horario pico debe ser mayor o igual que 5}
 \begin{itemize}
@@ -157,25 +150,27 @@ Luego de obtener los resultados decidimos realizar varias pruebas de hipótesis 
 
 Tomando $\alpha = 0.05$ y viendo que la fórmula $P_c$ es decreciente a medida que los valores de c aumentan, como para $c = 5$ el p-value es 0.0367, entonces podemos deducir que la hipótesis nula es cierta. Por tanto la cantidad óptima de líneas en el horario pico c, debe ser mayor o igual que 5.
 
-\subsection{}
-
 
 \section{Modelo Matemático}
 
-El sistema se puede modelar como un sistema de colas M/M/c/c/FIFO, donde:
+Nuestro sistema se puede modelar como un sistema de colas M/M/c/c/FIFO, donde:
 
-- M: Llegada de llamadas con distribución de Poisson (Exponencial).
-- M: Tiempo de atención con distribución exponencial.
-- c: Número de servidores (líneas o empleados).
-- c: Capacidad del sistema (0, sin cola).
-- FIFO: Primero en entrar, primero en salir.
+\begin{itemize}
+    \item M: Llegada de llamadas con distribución de Poisson.
+    \item M: Tiempo de atención con distribución exponencial.
+    \item c: Número de servidores (Lineas o empleados en horario pico).
+    \item c: Capacidad del sistema. Existen restricciones respecto al número de clientes que pueden esperar en la cola, la cual es 0, no hay cola pues como se refiere a llamadas telefónicas, si las tres líneas están ocupadas, el cliente no puede ser retenido, por lo que la capacidad total del sistema es igual a la cantidad de servidores.
+    \item FIFO: First In First Out. Las llamadas se atienden en el orden en que llegan, siempre y cuando haya un servidor disponible.
+\end{itemize}
 
 
 \subsection{Parámetros del Modelo}
 
-- $\lambda$: Tasa de llegada de llamadas (20 llamadas/hora).
-- $\mu$: Tasa de servicio (10 llamadas/hora).
-- c: Número de servidores (variado en la simulación).
+\begin{itemize}
+    \item $\lambda$: Tasa de llegada de llamadas (20 llamadas/hora).
+    \item $\mu$: Tasa de servicio (10 llamadas/hora).
+    \item c: Número de servidores (variado en la simulación).
+\end{itemize}
 
 \subsection{Fórmulas de Erlang}
 
@@ -224,14 +219,13 @@ Nuestro sistema posee los siguientes parámetros iniciales:
 \end{table}
 
 \section{Formas de Mejora a la Simulación}
-Un conocimiento más profundo del problema permitiría realizar una n más precisa y detallada. Por ejemplo,
+Un conocimiento más profundo del problema permitiría realizar una simulación más precisa y detallada. Por ejemplo,
 el conocimiento de como llegan las llamadas fuera del horario pico permitiría realizar un análisis más completo.
-También considerar otros detalles como retraso de las llamadas, congestión de la red, la variación de las ganancias por llamadas atendidas, entre otros.
+También considerar otros detalles como retraso de las llamadas, congestión de la red, temporadas de verano, la variación de las ganancias por llamadas atendidas, entre otros.
 
 \section{Conclusiones}
-Los resultados teóricos son similares a los obtenidos en la simulación, para una cantidad de empleados mayor $P_c$ tiende a 0, lo que indica que el sistema no se llenará. 
-Importante tener en cuenta que dicho análisis teórico no tiene en cuenta el costo de añadir un empleado adicional.
+Los resultados teóricos son similares a los obtenidos en la simulación, para una cantidad de empleados mayor se tiene que $P_c$ tiende a 0, lo que indica que será más difícil que se llene el sistema. 
+Dicho análisis teórico no tiene en cuenta el costo de los empleados.
 
-Se concluye que el número óptimo de empleados es 6 con vistas a maximizar las ganancias a largo plazo y teniendo un conocimiento más profundo del problema. 
-Sin embargo, como comentamos anteriormente 5 empleados maximiza las ganancias a corto plazo. 
+Se concluye que el número óptimo de empleados es 6 ya que permite obtener una buena reducción en la cantidad de llamadas perdidas y por ende en el dinero perdido, además de maximizar las ganancias.
 \end{document}
