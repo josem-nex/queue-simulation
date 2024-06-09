@@ -3,7 +3,7 @@
 ## Integrantes
 
 - José Miguel Zayas Pérez (tlgrm: @nex25k) C312
-- Adrián Hernández Santos (tlgrm: @ahdez929) C311
+- Adrian Hernández Santos (tlgrm: @ahdez929) C311
 
 ## Introducción
 
@@ -42,7 +42,7 @@ Además también se desea:
 ## Sistema y variables de interés
 
 - Patrón de llegada de llamadas: Poisson con una media de 20 llamadas por hora.
-  - Como se trata de un proceso de Poisson, el tiempo entre llegadas de llamadas sigue una distribución exponencial. Por lo tanto, el tiempo entre llegadas de llamadas es una variable aleatoria exponencial con media 3 minutos.
+  - Como se trata de un proceso de Poisson, el tiempo entre llegadas de llamadas sigue una distribución exponencial con media igual al inverso de la original, la cual es 1/3 (lo que representa 1 llamada cada 3 minutos de media). Por lo tanto, el tiempo entre llegadas de llamadas es una variable aleatoria exponencial con media 3 minutos.
 - Tiempo de atención de llamadas: Exponencial con media de 6 minutos.
 - Número de líneas inicial: 3. En la descripción del problema se asume que el coste de añadir una línea es despreciable, por lo que no se tiene en cuenta para la simulación.
   - Si todas las líneas están ocupadas, el cliente no puede ser retenido.
@@ -51,12 +51,12 @@ Además también se desea:
 - Coste de cada empleado: 24 euros por hora.
 - Horas de trabajo de cada empleado: 8 horas al día.
 
-Nuestro problema se puede modelar como un sistema de colas M/M/c/0/FIFO, donde:
+Nuestro problema se puede modelar como un sistema de colas `M/M/c/c/FIFO`, donde:
 
 - M: Proceso de llegada de llamadas sigue una distribución de Poisson.
 - M: Tiempo de atención de llamadas sigue una distribución exponencial.
 - c: Número de servidores (Lineas o empleados en horario pico).
-- 0: Capacidad del sistema. Existen restricciones respecto al número de clientes que pueden esperar en la cola, la cual es 0, no hay cola pues como se refiere a llamadas telefónicas, si las tres líneas están ocupadas, el cliente no puede ser retenido.
+- c: Capacidad del sistema. Existen restricciones respecto al número de clientes que pueden esperar en la cola, la cual es 0, no hay cola pues como se refiere a llamadas telefónicas, si las tres líneas están ocupadas, el cliente no puede ser retenido, por lo que la capacidad total del sistema es igual a la cantidad de servidores.
 - FIFO: First In First Out. Las llamadas se atienden en el orden en que llegan, siempre y cuando haya un servidor disponible.
 
 Todas las variables son modificables en el código de la simulación para poder analizar cómo varían los resultados al modificar los valores de las variables del sistema. Estos valores iniciales son los propuestos en el problema.
@@ -73,6 +73,31 @@ El código de la simulación se divide en las siguientes partes:
 - `queue-simulation.ipynb`: Jupyter Notebook que contiene la simulación principal y el análisis de los resultados.
 
 Se llevan a cabo una cantidad determinada de simulaciones para diferente cantidad de empleados, luego se recogen los resultados y se analizan para determinar el número óptimo de empleados.
+
+## Modelo matemático
+
+Dado que nuestro problema es un clásico problema de teoría de colas de la forma `M/M/c/c`, podemos aplicar el modelo de Erlang, el cual queda definido por las siguientes fórmulas:
+
+- Probabilidad de que el sistema esté lleno:
+ `poner formulita de Pc aqui en latex`
+- Número medio de clientes del sistema:
+  `poner formulita de L aqui en latex`
+- Tiempo medio de estancia de los clientes en el sistema:
+  `poner formulita de W aqui en latex`
+
+Nuestro sistema posee los siguientes parámetros iniciales:
+
+- lambda = 1/3
+- mu = 1/6
+- c = 3
+
+Asi que los resultados teoricos acorde al modelo para c = 3 serian:
+
+- Pc = 4/19 = 0.21
+- L = 30/19 = 1.5789
+- W = 6
+
+Pero se desea buscar un valor optimo de c tal que minimice la perdida de la compañia, asi que realizaremos nuestras simulaciones con diferente cantidad de lineas telefonicas, ya que se tiene como supuesto que el costo de agregar una nueva no varia.
 
 ## Resultados y Experimentos
 
